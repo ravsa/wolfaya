@@ -16,6 +16,7 @@ class gui():
     _ig1,_ig2="OFF",'OFF'
     def __init__(self):
         self.main_window=gtk.Window()
+        self.hist=open('history','r+')
         self.main_window.set_icon_from_file('images/wolfaya1.jpg')
         self.main_window.connect('destroy',self.exit)
         self.main_window.set_default_size(gtk.gdk.screen_width(),gtk.gdk.screen_height())
