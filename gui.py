@@ -22,7 +22,7 @@ class gui():
         self.wid=0
         self.settings1=webkit.WebSettings()
         self.settings2=webkit.WebSettings()
-        self.website1="file:///home/ravsa/new.html"
+        self.website1="file:///home/ravsa/net.html"
         self.website2="file:///home/ravsa/net.html"
         self.progress1=gtk.ProgressBar()
         self.progress1.set_size_request(gtk.gdk.screen_width(),5)
@@ -35,6 +35,17 @@ class gui():
         self.hbox.pack_start(self.horiz,False)
         self.view1=gtk.ScrolledWindow()
         self.view2=gtk.ScrolledWindow()
+
+        self.view1_x=self.view1.get_hadjustment()
+        self.view1_y=self.view1.get_vadjustment()
+        self.view1_x.connect('value_changed',self.switch_win,1,1)
+        self.view1_y.connect('value_changed',self.switch_win,1,1)
+
+        self.view2_x=self.view2.get_hadjustment()
+        self.view2_y=self.view2.get_vadjustment()
+        self.view2_x.connect('value_changed',self.switch_win,2,2)
+        self.view2_y.connect('value_changed',self.switch_win,2,2)
+
         self.main_window.add(self.vbox1)
         self.vbox1.pack_start(self.progress1,False)
         self.view1.set_border_width(1)
@@ -131,12 +142,15 @@ class gui():
             self._ig=gui._ig1
             self._mv=gui._mv1
             self.address2.modify_text(gtk.STATE_NORMAL,self.address2.get_colormap().alloc_color('light gray'))
+            self.address.modify_text(gtk.STATE_NORMAL,self.address.get_colormap().alloc_color('black'))
         else:
             self._js=gui._js2
             self._tm=gui._tm2
             self._ig=gui._ig2
             self._mv=gui._mv2
-            self.address1.modify_text(gtk.STATE_NORMAL,self.address1.get_colormap().alloc_color('light gray'))
+            self.address.modify_text(gtk.STATE_NORMAL,self.address.get_colormap().alloc_color('light gray'))
+            self.address2.modify_text(gtk.STATE_NORMAL,self.address2.get_colormap().alloc_color('black'))
+        self.update_label()
     def set_update(self):
         if gui._focus:
             gui._js1=self._js
@@ -148,22 +162,17 @@ class gui():
             gui._tm2=self._tm
             gui._ig2=self._ig
             gui._mv2=self._mv
-    def switch_win(self,etc):
-        if self.win.get_active():
-            gui._focus=False
-            self.win_lab.set_text('2')
-            self.get_update()
-            self.side_label()
-        else:
+    def switch_win(self,etc,code1,code2):
+
+        if code2==1:
             gui._focus=True
-            self.win_lab.set_text('1')
             self.get_update()
-            self.side_label()
+        elif code2==2:
+            gui._focus=False
+            self.get_update()
     def side_window(self):
-        self.get_update()
         self.js_con=gtk.HBox()
         self.js_lab=gtk.Label()
-        self.js_lab.set_text(self._js)
         self.js_lab.set_size_request(50,20)
         self.js_but=gtk.ToggleButton("JavaScript")
         self.js_but.set_active(True)
@@ -175,7 +184,6 @@ class gui():
         self.horiz.pack_start(gtk.HSeparator(),False)
         self.tm_con=gtk.HBox()
         self.tm_lab=gtk.Label()
-        self.tm_lab.set_text(self._tm)
         self.tm_lab.set_size_request(50,20)
         self.tm_but=gtk.ToggleButton("TextMode")
         self.tm_but.set_size_request(100,27)
@@ -186,7 +194,6 @@ class gui():
         self.horiz.pack_start(gtk.HSeparator(),False)
         self.ig_con=gtk.HBox()
         self.ig_lab=gtk.Label()
-        self.ig_lab.set_text(self._ig)
         self.ig_lab.set_size_request(50,20)
         self.ig_but=gtk.ToggleButton("incognito")
         self.ig_but.set_size_request(100,27)
@@ -197,7 +204,6 @@ class gui():
         self.horiz.pack_start(gtk.HSeparator(),False)
         self.mv_con=gtk.HBox()
         self.mv_lab=gtk.Label()
-        self.mv_lab.set_text(self._mv)
         self.mv_lab.set_size_request(50,20)
         self.mv_but=gtk.ToggleButton("MobileVeiw")
         self.mv_but.set_size_request(100,27)
@@ -206,12 +212,32 @@ class gui():
         self.horiz.pack_start(self.mv_con,False)
         self.horiz.pack_start(gtk.HSeparator(),False)
         self.horiz.pack_start(gtk.HSeparator(),False)
-    def side_label(self):
+        self.get_update()
+    def update_label(self):
         self.js_lab.set_text(self._js)
         self.mv_lab.set_text(self._mv)
         self.ig_lab.set_text(self._ig)
         self.tm_lab.set_text(self._tm)
+        if self._js is "ON":
+            self.js_but.set_active(True)
+        else:
+            self.js_but.set_active(False)
 
+        if self._tm is "ON":
+            self.tm_but.set_active(True)
+        else:
+            self.tm_but.set_active(False)
+
+        if self._mv is "ON":
+            self.mv_but.set_active(True)
+        else:
+            self.mv_but.set_active(False)
+
+        if self._ig is "ON":
+            self.ig_but.set_active(True)
+        else:
+            self.ig_but.set_active(False)
+         
     def side_action(self):
         self.js_but.connect('toggled',self.js_action)
         self.tm_but.connect('toggled',self.tm_action)
@@ -246,8 +272,10 @@ class gui():
         self.forward.connect('clicked',self.forward_q)
         self.refresh.connect('clicked',self.refresh_old)
         self.address.connect('activate',self.goto1)
+        self.address.connect('button_press_event',self.switch_win,1)
         self.address2.connect('activate',self.goto2)
         self.search.connect('activate',self.search_q)
+        self.address2.connect('button_press_event',self.switch_win,2)
     def tm_action(self,etc):
         if self.tm_but.get_active():
             self._tm="ON"
@@ -361,6 +389,7 @@ class gui():
 
     def goto1(self,etc):
         gui._focus=True
+        self.get_update()
         self.website1=self.address.get_text()
         if self.website1.startswith('http://') or self.website1.startswith('https://'):
            pass
@@ -371,11 +400,12 @@ class gui():
         gobject.timeout_add(5,self.status)
     def goto2(self,etc):
         gui._focus=False
+        self.get_update()
         self.website2=self.address2.get_text()
         if self.website2.startswith('http://') or self.website2.startswith('https://'):
             pass
         else:
-            self.website2='http:///'+self.website2
+            self.website2='http://'+self.website2
         self.address2.set_text(self.website2)
         self.web2.open(self.website2)
         gobject.timeout_add(5,self.status)
@@ -383,9 +413,14 @@ class gui():
     def search_q(self,etc):
         self.search_me=self.search.get_text()
         self.search_me=gui._first+self.search_me.replace(' ','+')+gui._second
-        self.website1=self.search_me
-        self.web1.open(self.website1)
-        gobject.timeout_add(5,self.status)
+        if gui._focus:
+            self.website1=self.search_me
+            self.web1.open(self.website1)
+            gobject.timeout_add(5,self.status)
+        else:
+            self.website2=self.search_me
+            self.web2.open(self.website2)
+            gobject.timeout_add(5,self.status)
     def title1(self,etc,frame,title):
         self.main_window.set_title(title)       
     def title2(self,etc,frame,title):
@@ -417,10 +452,10 @@ class gui():
         self.progress1.set_fraction(gui._st1)
         return True
     def cont2(self,etc):
-        self.delta()
         if gui._static:
-                    gui._static=False
-                    self.view2.show()
+            self.delta()
+            gui._static=False
+            self.view2.show()
         else:
             self.view2.hide()
             self.delta()
