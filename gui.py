@@ -460,7 +460,12 @@ class gui():
             self.view2.hide()
             self.delta()
             gui._static=True
+    def show_history(self):
+        pass
+    def write_history(self,url):
+        self.hist.write(url)
     def exit(self,etc):
+        self.hist.close()
         gtk.main_quit()
 
 
