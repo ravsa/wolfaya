@@ -16,7 +16,7 @@ class gui():
     _ig1,_ig2="OFF",'OFF'
     def __init__(self):
         self.main_window=gtk.Window()
-        self.hist=open('history','r+')
+        self.hist=open('history','a+')
         self.main_window.set_icon_from_file('images/wolfaya1.jpg')
         self.main_window.connect('destroy',self.exit)
         self.main_window.set_default_size(gtk.gdk.screen_width(),gtk.gdk.screen_height())
@@ -300,6 +300,7 @@ class gui():
                 self.web2.set_settings(self.settings2)
  
     def js_action(self,etc):
+        self.show_history()
         if self.js_but.get_active():
             self._js='ON'
             self.js_lab.set_text(self._js)
@@ -397,6 +398,7 @@ class gui():
         else:
            self.website1='http://'+self.website1
         self.address.set_text(self.website1)
+        self.write_history(self.website1)
         self.web1.open(self.website1)
         gobject.timeout_add(5,self.status)
     def goto2(self,etc):
@@ -408,6 +410,7 @@ class gui():
         else:
             self.website2='http://'+self.website2
         self.address2.set_text(self.website2)
+        self.write_history(self.website2)
         self.web2.open(self.website2)
         gobject.timeout_add(5,self.status)
 
@@ -416,10 +419,12 @@ class gui():
         self.search_me=gui._first+self.search_me.replace(' ','+')+gui._second
         if gui._focus:
             self.website1=self.search_me
+            self.write_history(self.website1)
             self.web1.open(self.website1)
             gobject.timeout_add(5,self.status)
         else:
             self.website2=self.search_me
+            self.write_history(self.website2)
             self.web2.open(self.website2)
             gobject.timeout_add(5,self.status)
     def title1(self,etc,frame,title):
@@ -462,9 +467,10 @@ class gui():
             self.delta()
             gui._static=True
     def show_history(self):
-        pass
+        self.hist_list=list(self.hist.read().split(' '))
+        self.hist_list.reverse()
     def write_history(self,url):
-        self.hist.write(url)
+        self.hist.write(url+' ')
     def exit(self,etc):
         self.hist.close()
         gtk.main_quit()
