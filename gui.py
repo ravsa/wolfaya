@@ -1,4 +1,5 @@
 import pygtk,gtk
+import time
 import gobject
 import urllib2 
 import webkit
@@ -17,10 +18,13 @@ class gui():
     def __init__(self):
         self.main_window=gtk.Window()
         self.hist=open('history','a+')
+        self.histstore=gtk.TreeStore(str)
+        self.histbox=gtk.VBox()
         self.main_window.set_icon_from_file('images/wolfaya1.jpg')
         self.main_window.connect('destroy',self.exit)
         self.main_window.set_default_size(gtk.gdk.screen_width(),gtk.gdk.screen_height())
         self.wid=0
+
         self.settings1=webkit.WebSettings()
         self.settings2=webkit.WebSettings()
         self.website1="file:///home/ravsa/net.html"
@@ -470,7 +474,24 @@ class gui():
         self.hist_list=list(self.hist.read().split(' '))
         self.hist_list.reverse()
     def write_history(self,url):
-        self.hist.write(url+' ')
+        string,c,check='',0,True
+        local=list(time.localtime()[:3])
+        local.reverse()
+        for i in local:
+            string+=str(i)
+            c+=1
+            if c-1 != 2:
+                string+='-'
+        print string
+        self.hist.seek(0,0)
+        for i in self.hist.readlines():
+            if i.find(string) > -1:
+                check=False
+        if check:
+            self.hist.write('\n'+string+'#!#')
+            self.hist.flush()
+        self.hist.write(url+'#!#')
+        self.hist.flush()
     def exit(self,etc):
         self.hist.close()
         gtk.main_quit()
