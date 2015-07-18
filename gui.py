@@ -170,6 +170,7 @@ class gui():
             gui._tm2=self._tm
             gui._ig2=self._ig
             gui._mv2=self._mv
+        self.get_update()
     def switch_win(self,etc,code1,code2):
 
         if code2==1:
@@ -226,25 +227,33 @@ class gui():
         self.mv_lab.set_text(self._mv)
         self.ig_lab.set_text(self._ig)
         self.tm_lab.set_text(self._tm)
-        if self._js is "ON":
+        if self._js == "ON" :
             self.js_but.set_active(True)
+            self.js_lab.modify_fg(gtk.STATE_NORMAL,self.js_lab.get_colormap().alloc_color('green'))
         else:
             self.js_but.set_active(False)
+            self.js_lab.modify_fg(gtk.STATE_NORMAL,self.js_lab.get_colormap().alloc_color('red'))
 
-        if self._tm is "ON":
+        if self._tm == 'ON':
             self.tm_but.set_active(True)
+            self.tm_lab.modify_fg(gtk.STATE_NORMAL,self.tm_lab.get_colormap().alloc_color('green'))
         else:
             self.tm_but.set_active(False)
+            self.tm_lab.modify_fg(gtk.STATE_NORMAL,self.tm_lab.get_colormap().alloc_color('red'))
 
-        if self._mv is "ON":
+        if self._mv == "ON":
             self.mv_but.set_active(True)
+            self.mv_lab.modify_fg(gtk.STATE_NORMAL,self.mv_lab.get_colormap().alloc_color('green'))
         else:
             self.mv_but.set_active(False)
+            self.mv_lab.modify_fg(gtk.STATE_NORMAL,self.mv_lab.get_colormap().alloc_color('red'))
 
-        if self._ig is "ON":
+        if self._ig == "ON":
             self.ig_but.set_active(True)
+            self.ig_lab.modify_fg(gtk.STATE_NORMAL,self.ig_lab.get_colormap().alloc_color('green'))
         else:
             self.ig_but.set_active(False)
+            self.ig_lab.modify_fg(gtk.STATE_NORMAL,self.ig_lab.get_colormap().alloc_color('red'))
          
     def side_action(self):
         self.js_but.connect('toggled',self.js_action)
@@ -307,7 +316,6 @@ class gui():
                 self.web2.set_settings(self.settings2)
  
     def js_action(self,etc):
-        self.show_history()
         if self.js_but.get_active():
             self._js='ON'
             self.js_lab.set_text(self._js)
@@ -469,7 +477,9 @@ class gui():
             self.delta()
             gui._static=False
             self.view2.show()
+            self.switch_win(2,2,2)
         else:
+            self.switch_win(1,1,1)
             self.view2.hide()
             self.delta()
             gui._static=True
