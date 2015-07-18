@@ -20,6 +20,8 @@ class gui():
         self.hist=open('history','a+')
         self.histstore=gtk.TreeStore(str)
         self.histbox=gtk.VBox()
+        self.histview=gtk.TreeView(self.histstore)
+        self.histbox.pack_start(self.histview)
         self.main_window.set_icon_from_file('images/wolfaya1.jpg')
         self.main_window.connect('destroy',self.exit)
         self.main_window.set_default_size(gtk.gdk.screen_width(),gtk.gdk.screen_height())
@@ -38,6 +40,7 @@ class gui():
         self.side_action()
         self.hbox=gtk.HBox()
         self.hbox.pack_start(self.horiz,False)
+        self.hbox.pack_start(self.histbox,False)
         self.view1=gtk.ScrolledWindow()
         self.view2=gtk.ScrolledWindow()
 
@@ -471,25 +474,18 @@ class gui():
             self.delta()
             gui._static=True
     def show_history(self):
-        self.hist_list=list(self.hist.read().split(' '))
-        self.hist_list.reverse()
+        parent=self.histstore.append(None,['History'])
+        store=self.hist.read().split('#!#')
+        store.reverse()
+        for i in store:
+            if i != '':
+                self.histstore.append(parent,['%s'%i])
+        histcolumn=gtk.TreeViewColumn('History')
+        cell=gtk.CellRendererText()
+        histcolumn.pack_start(cell,True)
+        histcolumn.add_attribute(cell,'text',0)
+        self.histview.append_column(histcolumn)
     def write_history(self,url):
-        string,c,check='',0,True
-        local=list(time.localtime()[:3])
-        local.reverse()
-        for i in local:
-            string+=str(i)
-            c+=1
-            if c-1 != 2:
-                string+='-'
-        print string
-        self.hist.seek(0,0)
-        for i in self.hist.readlines():
-            if i.find(string) > -1:
-                check=False
-        if check:
-            self.hist.write('\n'+string+'#!#')
-            self.hist.flush()
         self.hist.write(url+'#!#')
         self.hist.flush()
     def exit(self,etc):
