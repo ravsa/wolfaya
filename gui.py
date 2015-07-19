@@ -20,11 +20,11 @@ class gui():
         self.main_window=gtk.Window()
         self.hist=open('history','a+')
         self.histbox=gtk.VBox()
-        self.field=list(range(20))
-        for i in range(20):
+        self.field=list(range(35))
+        for i in range(35):
             self.field[i]=gtk.Entry()
             self.field[i].set_size_request(200,20)
-            self.field[i].connect('activate',self.load_hist,i)
+            self.field[i].connect('button-press-event',self.load_hist,i)
             self.histbox.pack_start(self.field[i],False)
         self.main_window.set_icon_from_file('images/wolfaya1.jpg')
         self.main_window.connect('destroy',self.exit)
@@ -33,8 +33,8 @@ class gui():
 
         self.settings1=webkit.WebSettings()
         self.settings2=webkit.WebSettings()
-        self.website1="file:///home/ravsa/net.html"
-        self.website2="file:///home/ravsa/net.html"
+        self.website1=""
+        self.website2=""
         self.progress1=gtk.ProgressBar()
         self.progress1.set_size_request(gtk.gdk.screen_width(),5)
         self.vbox1=gtk.VBox()
@@ -85,18 +85,18 @@ class gui():
         self.horiz.hide()
         self.histbox.hide()
         gtk.main()
-    def load_hist(self,etc,etc1):
-        url=self.field[etc1].get_text()
+    def load_hist(self,x,y,etc):
+        url=self.field[etc].get_text()
         if gui._focus:
             self.web1.open(url)
             self.address.set_text(url)
             gobject.timeout_add(5,self.status)
-            self.write_history(url)
+            self.histbox.hide()
         else:
             self.web2.open(url)
             self.address2.set_text(url)
             gobject.timeout_add(5,self.status)
-            self.write_history(url)
+            self.histbox.hide()
     def menu_bar(self):
         self.menubar=gtk.MenuBar()
         actiongroup=gtk.ActionGroup('Basegroup')
@@ -516,7 +516,7 @@ class gui():
             store.remove('')
             count=0
             for i in store:
-                if i != '' and count < 20:
+                if i != '' and count < 35:
                     self.field[count].set_text(str(i))
                     count+=1
             self.histbox.show()
