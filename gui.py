@@ -11,6 +11,7 @@ class gui():
     _second="&ie=utf-8&oe=utf-8"
     _st1=0
     _prf=True
+    _hist=True
     _js1,_js2="ON",'ON'
     _mv1,_mv2="OFF",'OFF'
     _tm1,_tm2="OFF",'OFF'
@@ -18,10 +19,13 @@ class gui():
     def __init__(self):
         self.main_window=gtk.Window()
         self.hist=open('history','a+')
-        self.histstore=gtk.TreeStore(str)
         self.histbox=gtk.VBox()
-        self.histview=gtk.TreeView(self.histstore)
-        self.histbox.pack_start(self.histview)
+        self.field=list(range(20))
+        for i in range(20):
+            self.field[i]=gtk.Entry()
+            self.field[i].set_size_request(200,20)
+            self.field[i].connect('activate',self.load_hist,i)
+            self.histbox.pack_start(self.field[i],False)
         self.main_window.set_icon_from_file('images/wolfaya1.jpg')
         self.main_window.connect('destroy',self.exit)
         self.main_window.set_default_size(gtk.gdk.screen_width(),gtk.gdk.screen_height())
@@ -34,6 +38,7 @@ class gui():
         self.progress1=gtk.ProgressBar()
         self.progress1.set_size_request(gtk.gdk.screen_width(),5)
         self.vbox1=gtk.VBox()
+        self.menu_bar()
         self.horiz=gtk.VBox()
         self.tool_bar()
         self.side_window()
@@ -74,12 +79,24 @@ class gui():
         self.web2.connect('title-changed',self.title2)
         self.web2.connect('load-committed',self.load_page2)
         self.vbox1.pack_start(self.hbox)
-        self.menu_bar()
         self.tool_actions()
         self.main_window.show_all()
         self.view2.hide()
         self.horiz.hide()
+        self.histbox.hide()
         gtk.main()
+    def load_hist(self,etc,etc1):
+        url=self.field[etc1].get_text()
+        if gui._focus:
+            self.web1.open(url)
+            self.address.set_text(url)
+            gobject.timeout_add(5,self.status)
+            self.write_history(url)
+        else:
+            self.web2.open(url)
+            self.address2.set_text(url)
+            gobject.timeout_add(5,self.status)
+            self.write_history(url)
     def menu_bar(self):
         self.menubar=gtk.MenuBar()
         actiongroup=gtk.ActionGroup('Basegroup')
@@ -221,6 +238,11 @@ class gui():
         self.horiz.pack_start(self.mv_con,False)
         self.horiz.pack_start(gtk.HSeparator(),False)
         self.horiz.pack_start(gtk.HSeparator(),False)
+        self.hst_but=gtk.Button("History")
+        self.hst_but.set_size_request(150,30)
+        self.horiz.pack_start(self.hst_but,False)
+        self.horiz.pack_start(gtk.HSeparator(),False)
+        self.horiz.pack_start(gtk.HSeparator(),False)
         self.get_update()
     def update_label(self):
         self.js_lab.set_text(self._js)
@@ -260,6 +282,7 @@ class gui():
         self.tm_but.connect('toggled',self.tm_action)
         self.mv_but.connect('toggled',self.mv_action)
         self.ig_but.connect('toggled',self.ig_action)
+        self.hst_but.connect('clicked',self.show_history,'')
     def side_win_action(self,etc):
         def motion(self,condition):
             self.horiz.show()
@@ -483,18 +506,24 @@ class gui():
             self.view2.hide()
             self.delta()
             gui._static=True
-    def show_history(self):
-        parent=self.histstore.append(None,['History'])
-        store=self.hist.read().split('#!#')
-        store.reverse()
-        for i in store:
-            if i != '':
-                self.histstore.append(parent,['%s'%i])
-        histcolumn=gtk.TreeViewColumn('History')
-        cell=gtk.CellRendererText()
-        histcolumn.pack_start(cell,True)
-        histcolumn.add_attribute(cell,'text',0)
-        self.histview.append_column(histcolumn)
+    def show_history(self,etc,col):
+        if gui._hist:
+            self.histbox.show()
+            self.hist.seek(0,0)
+            field=[]
+            store=self.hist.read().split('#!#')
+            store.reverse()
+            store.remove('')
+            count=0
+            for i in store:
+                if i != '' and count < 20:
+                    self.field[count].set_text(str(i))
+                    count+=1
+            self.histbox.show()
+            gui._hist=False
+        else:
+            gui._hist=True
+            self.histbox.hide()
     def write_history(self,url):
         self.hist.write(url+'#!#')
         self.hist.flush()
