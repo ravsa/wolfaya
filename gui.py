@@ -1,9 +1,11 @@
 import pygtk,gtk
+import thread
 import time
 import gobject
 import urllib2 
 import webkit
 import pdfkit
+import subprocess,os
 class gui():
     _static=True
     _focus=True
@@ -17,6 +19,19 @@ class gui():
     _tm1,_tm2="OFF",'OFF'
     _ig1,_ig2="OFF",'OFF'
     def __init__(self):
+        self.home_dir=subprocess.Popen('echo ~',shell=True,stdout=subprocess.PIPE).communicate()[0]
+        try:
+            self.home_dir=self.home_dir[:-1]+'/wolfay'
+            cmd='mkdir '+self.home_dir
+            os.system(cmd)
+            cmd='mkdir '+self.home_dir+'/pdf'
+            os.system(cmd)
+            cmd='mkdir '+self.home_dir+'/screen_shots'
+            os.system(cmd)
+            cmd='mkdir '+self.home_dir+'/Downloads'
+            os.system(cmd)
+        except Exception,e:
+            pass
         self.main_window=gtk.Window()
         self.hist=open('history','a+')
         self.histbox=gtk.VBox()
@@ -33,7 +48,7 @@ class gui():
 
         self.settings1=webkit.WebSettings()
         self.settings2=webkit.WebSettings()
-        self.website1=""
+        self.website1="file:///home/ravsa/new.html"
         self.website2=""
         self.progress1=gtk.ProgressBar()
         self.progress1.set_size_request(gtk.gdk.screen_width(),5)
@@ -82,6 +97,7 @@ class gui():
         self.tool_actions()
         self.main_window.show_all()
         self.view2.hide()
+        self.name.hide()
         self.horiz.hide()
         self.histbox.hide()
         gtk.main()
@@ -197,6 +213,11 @@ class gui():
             gui._focus=False
             self.get_update()
     def side_window(self):
+        self.side_progress=gtk.ProgressBar()
+        self.side_progress.set_size_request(100,10)
+        self.horiz.pack_start(self.side_progress,False)
+        self.horiz.pack_start(gtk.HSeparator(),False)
+        self.horiz.pack_start(gtk.HSeparator(),False)
         self.js_con=gtk.HBox()
         self.js_lab=gtk.Label()
         self.js_lab.set_size_request(50,20)
@@ -236,6 +257,16 @@ class gui():
         self.mv_con.pack_start(self.mv_but,False)
         self.mv_con.pack_start(self.mv_lab,False)
         self.horiz.pack_start(self.mv_con,False)
+        self.horiz.pack_start(gtk.HSeparator(),False)
+        self.horiz.pack_start(gtk.HSeparator(),False)
+        self.name=gtk.Entry()
+        self.name.set_text("Enter_name")
+        self.horiz.pack_start(self.name,False)
+        self.horiz.pack_start(gtk.HSeparator(),False)
+        self.horiz.pack_start(gtk.HSeparator(),False)
+        self.pdf_but=gtk.Button("Save as PDF")
+        self.pdf_but.set_size_request(150,30)
+        self.horiz.pack_start(self.pdf_but,False)
         self.horiz.pack_start(gtk.HSeparator(),False)
         self.horiz.pack_start(gtk.HSeparator(),False)
         self.hst_but=gtk.Button("History")
@@ -283,6 +314,7 @@ class gui():
         self.mv_but.connect('toggled',self.mv_action)
         self.ig_but.connect('toggled',self.ig_action)
         self.hst_but.connect('clicked',self.show_history,'')
+        self.pdf_but.connect('clicked',self.gen_pdf)
     def side_win_action(self,etc):
         def motion(self,condition):
             self.horiz.show()
@@ -316,6 +348,29 @@ class gui():
         self.address2.connect('activate',self.goto2)
         self.search.connect('activate',self.search_q)
         self.address2.connect('button_press_event',self.switch_win,2)
+    def gen_pdf(self,etc):
+        self.var=0
+        self.name.show()
+        def pdf_main(x,self):
+            def process(self):
+                if self.var > 1:
+                    return False
+                self.side_progress.pulse()
+                self.side_progress.set_fraction(self.var)
+                self.var+=.002
+                return True
+            def pdf(self):
+                name=self.home_dir+'/pdf/'+self.name.get_text()
+                if gui._focus:
+                    #print name
+                    pdfkit.from_url(self.address.get_text(),name)
+                    self.var=1
+                else:
+                    pdfkit.from_url(self.address2.get_text(),name)
+                    self.var=1
+            thread.start_new_thread(gobject.timeout_add,(13,process,self))
+            thread.start_new_thread(pdf,(self,))
+        self.name.connect('activate',pdf_main,self)
     def tm_action(self,etc):
         if self.tm_but.get_active():
             self._tm="ON"
