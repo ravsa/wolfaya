@@ -7,7 +7,7 @@ else
     echo "Error in running script ./pdfkit/setup.py"
     echo "Run it mannualy '$ sudo python setup.py install'"
 fi
-echo "Installing dependencies..!"
+echo "Installing dependences..!"
 if sudo apt-get install python-gtk2
 then
     echo "Done!"

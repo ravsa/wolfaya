@@ -47,8 +47,8 @@ class wolfaya():
         except Exception,e:
             print e 
         self.main_window=gtk.Window()
-        
-        self.hist=open('history','a+')
+        file=self.install_dir+'history'
+        self.hist=open(file,'a+')
         self.histbox=gtk.VBox()
         self.field=list(range(35))
         
@@ -67,7 +67,7 @@ class wolfaya():
         self.settings1=webkit.WebSettings()
         self.settings2=webkit.WebSettings()
         
-        self.website1='/home/ravsa/wolfaya/default.html'
+        self.website1=self.install_dir+'default.html'
         self.website2=""
         
         self.progress1=gtk.ProgressBar()
@@ -432,7 +432,7 @@ class wolfaya():
             self.horiz.show()
             if condition:
                
-                self.wid=self.wid+3
+                self.wid=self.wid+8
                 self.horiz.set_size_request(self.wid,600)
                 if self.wid >=170:
                     return False
@@ -440,7 +440,7 @@ class wolfaya():
 
             else:
         
-                self.wid=self.wid-5
+                self.wid=self.wid-11
                 if self.wid <= 0:
                     self.horiz.hide()
                     return False
@@ -483,7 +483,7 @@ class wolfaya():
                     return False
                 self.side_progress.pulse()
                 self.side_progress.set_fraction(self.var)
-                self.var+=.002
+                self.var+=.001
                 return True
             
             def pdf(self):
@@ -514,7 +514,7 @@ class wolfaya():
                     return False
                 self.side_progress.pulse()
                 self.side_progress.set_fraction(self.var)
-                self.var+=.002
+                self.var+=.001
                 return True
             
             def scr_sh(self):

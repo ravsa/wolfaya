@@ -3,7 +3,8 @@ bash dependences
 mkdir /tmp/.wolfaya
 cp -arvf * /tmp/.wolfaya/
 cp -arvf /tmp/.wolfaya/ ~/
-chmod 733 ~/.wolfaya/wolfaya.py
+chmod 755 ~/.wolfaya/wolfaya.py
+chmod 755 ~/.wolfaya/wolfaya.pyc
 echo "PATH=$PATH:~/.wolfaya/" >> ~/.bashrc
 echo "alias wolfaya='python ~/.wolfaya/wolfaya.pyc'" >>~/.bashrc
 rm -rvf /tmp/.wolfaya
