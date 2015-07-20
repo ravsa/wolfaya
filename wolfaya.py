@@ -1,3 +1,4 @@
+#!/usr/bin/python
 import pygtk,gtk
 import thread
 import time
@@ -6,7 +7,7 @@ import gobject
 import urllib2 
 import webkit
 import pdfkit
-import subprocess,os
+import subprocess,os,sys
 class wolfaya():
     _static=True
 
@@ -29,6 +30,8 @@ class wolfaya():
         self.home_dir=subprocess.Popen('echo ~',shell=True,stdout=subprocess.PIPE).communicate()[0]
         
         try:
+            self.install_dir=self.home_dir[:-1]+'/.wolfaya/'
+            sys.path.append(self.install_dir)
             self.home_dir=self.home_dir[:-1]+'/wolfay/'
             cmd='mkdir '+self.home_dir
             os.system(cmd)
@@ -40,8 +43,7 @@ class wolfaya():
             os.system(cmd)
         
         except Exception,e:
-            pass
-        
+            print e 
         self.main_window=gtk.Window()
         
         self.hist=open('history','a+')
@@ -54,8 +56,8 @@ class wolfaya():
             self.field[i].set_size_request(200,20)
             self.field[i].connect('button-press-event',self.load_hist,i)
             self.histbox.pack_start(self.field[i],False)
-        
-        self.main_window.set_icon_from_file('images/wolfaya1.jpg')
+        image=self.install_dir+'images/wolfaya1.jpg' 
+        self.main_window.set_icon_from_file(image)
         self.main_window.connect('destroy',self.exit)
         self.main_window.set_default_size(gtk.gdk.screen_width(),gtk.gdk.screen_height())
         self.wid=0
@@ -63,7 +65,7 @@ class wolfaya():
         self.settings1=webkit.WebSettings()
         self.settings2=webkit.WebSettings()
         
-        self.website1="file:///home/ravsa/net.html"
+        self.website1=self.install_dir+'default.html'
         self.website2=""
         
         self.progress1=gtk.ProgressBar()
@@ -194,7 +196,8 @@ class wolfaya():
 
         self.toolbox=gtk.HBox()
         self.split_image=gtk.Image()
-        self.split_image.set_from_file('./images/split.jpg')
+        image=self.install_dir+'images/split.jpg'
+        self.split_image.set_from_file(image)
         
         self.spl_but=gtk.ToggleButton()
         self.spl_but.add(self.split_image)
@@ -213,7 +216,7 @@ class wolfaya():
         self.refresh=gtk.ToolButton(gtk.STOCK_REFRESH)
         
         self.search=gtk.Entry()
-        self.search.set_text("Search:wolfaya")
+        self.search.set_text("Search")
         self.search.set_size_request(180,27)
         
         self.toolbox.pack_start(self.pref,False)
