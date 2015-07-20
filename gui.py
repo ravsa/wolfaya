@@ -648,7 +648,7 @@ class gui():
         if self.website1.startswith('http://') or self.website1.startswith('https://'):
            pass
         
-       else:
+        else:
            self.website1='http://'+self.website1
         
         self.address.set_text(self.website1)
