@@ -1,6 +1,7 @@
 import pygtk,gtk
 import thread
 import time
+import screenshot
 import gobject
 import urllib2 
 import webkit
@@ -28,14 +29,14 @@ class gui():
         self.home_dir=subprocess.Popen('echo ~',shell=True,stdout=subprocess.PIPE).communicate()[0]
         
         try:
-            self.home_dir=self.home_dir[:-1]+'/wolfay'
+            self.home_dir=self.home_dir[:-1]+'/wolfay/'
             cmd='mkdir '+self.home_dir
             os.system(cmd)
-            cmd='mkdir '+self.home_dir+'/pdf'
+            cmd='mkdir '+self.home_dir+'pdf/'
             os.system(cmd)
-            cmd='mkdir '+self.home_dir+'/screen_shots'
+            cmd='mkdir '+self.home_dir+'screenshots/'
             os.system(cmd)
-            cmd='mkdir '+self.home_dir+'/Downloads'
+            cmd='mkdir '+self.home_dir+'Downloads/'
             os.system(cmd)
         
         except Exception,e:
@@ -62,7 +63,7 @@ class gui():
         self.settings1=webkit.WebSettings()
         self.settings2=webkit.WebSettings()
         
-        self.website1="file:///home/ravsa/new.html"
+        self.website1="file:///home/ravsa/net.html"
         self.website2=""
         
         self.progress1=gtk.ProgressBar()
@@ -348,6 +349,12 @@ class gui():
         self.horiz.pack_start(self.pdf_but,False)
         self.horiz.pack_start(gtk.HSeparator(),False)
         self.horiz.pack_start(gtk.HSeparator(),False)
+ 
+        self.scr_sh=gtk.Button("Screen_shot")
+        self.scr_sh.set_size_request(150,30)
+        self.horiz.pack_start(self.scr_sh,False)
+        self.horiz.pack_start(gtk.HSeparator(),False)
+        self.horiz.pack_start(gtk.HSeparator(),False)
         
         self.hst_but=gtk.Button("History")
         self.hst_but.set_size_request(150,30)
@@ -411,6 +418,7 @@ class gui():
         self.ig_but.connect('toggled',self.ig_action)
         self.hst_but.connect('clicked',self.show_history,'')
         self.pdf_but.connect('clicked',self.gen_pdf)
+        self.scr_sh.connect('clicked',self.gen_screenshot)
     
     def side_win_action(self,etc):
         """Animation for side window """
@@ -465,6 +473,7 @@ class gui():
         
         def pdf_main(x,self):
             def process(self):
+                self.name.hide()
                 if self.var > 1:
                     return False
                 self.side_progress.pulse()
@@ -473,7 +482,7 @@ class gui():
                 return True
             
             def pdf(self):
-                name=self.home_dir+'/pdf/'+self.name.get_text()+'.pdf'
+                name=self.home_dir+'pdf/'+self.name.get_text()+'.pdf'
                 if gui._focus:
                     #print name
                     pdfkit.from_url(self.address.get_text(),name)
@@ -486,7 +495,38 @@ class gui():
             thread.start_new_thread(pdf,(self,))
         
         self.name.connect('activate',pdf_main,self)
-    
+
+    def gen_screenshot(self,etc):
+        """screenshots generator function"""
+
+        self.var=0
+        self.name.show()
+        
+        def scr_sh_main(x,self):
+            def process(self):
+                self.name.hide()
+                if self.var > 1:
+                    return False
+                self.side_progress.pulse()
+                self.side_progress.set_fraction(self.var)
+                self.var+=.002
+                return True
+            
+            def scr_sh(self):
+                name=self.home_dir+'screenshots/'
+                if gui._focus:
+                    #print name
+                    screenshot.screen_shot(self.address.get_text(),name,self.name.get_text())
+                    self.var=1
+                else:
+                    screenshot.screen_shot(self.address2.get_text(),name,self.name.get_text())
+                    self.var=1
+            
+            thread.start_new_thread(gobject.timeout_add,(13,process,self))
+            thread.start_new_thread(scr_sh,(self,))
+        
+        self.name.connect('activate',scr_sh_main,self)
+      
     def tm_action(self,etc):
         """Textmode on/off action"""
 
