@@ -3,12 +3,11 @@ bash dependences
 mkdir /tmp/.wolfaya
 cp -arvf * /tmp/.wolfaya/
 cp -arvf /tmp/.wolfaya/ ~/
-chmod 711 ~/.wolfaya/wolfaya.pyc
-chmod 711 ~/.wolfaya/wolfaya.py
+chmod 733 ~/.wolfaya/wolfaya.py
 echo "PATH=$PATH:~/.wolfaya/" >> ~/.bashrc
 echo "alias wolfaya='python ~/.wolfaya/wolfaya.pyc'" >>~/.bashrc
 rm -rvf /tmp/.wolfaya
 echo ""
-echo "    -->Finished<--"
+echo "    -->installed<--"
 echo "   restart terminal"
-echo "    use command 'wolfaya'"
+echo "    use cmd 'wolfaya'"

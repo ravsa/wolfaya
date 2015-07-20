@@ -33,13 +33,15 @@ class wolfaya():
             self.install_dir=self.home_dir[:-1]+'/.wolfaya/'
             sys.path.append(self.install_dir)
             self.home_dir=self.home_dir[:-1]+'/wolfay/'
-            cmd='mkdir '+self.home_dir
+            cmd='mkdir '+self.home_dir+' 2>/dev/null'
             os.system(cmd)
-            cmd='mkdir '+self.home_dir+'pdf/'
+            cmd='mkdir '+self.home_dir+'pdf/'+' 2>/dev/null'
             os.system(cmd)
-            cmd='mkdir '+self.home_dir+'screenshots/'
+            cmd='mkdir '+self.home_dir+'screenshots/'+' 2>/dev/null'
+
             os.system(cmd)
-            cmd='mkdir '+self.home_dir+'Downloads/'
+            cmd='mkdir '+self.home_dir+'Downloads/'+' 2>/dev/null'
+
             os.system(cmd)
         
         except Exception,e:
@@ -65,7 +67,7 @@ class wolfaya():
         self.settings1=webkit.WebSettings()
         self.settings2=webkit.WebSettings()
         
-        self.website1=self.install_dir+'default.html'
+        self.website1='/home/ravsa/wolfaya/default.html'
         self.website2=""
         
         self.progress1=gtk.ProgressBar()
