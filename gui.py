@@ -360,7 +360,7 @@ class gui():
                 self.var+=.002
                 return True
             def pdf(self):
-                name=self.home_dir+'/pdf/'+self.name.get_text()
+                name=self.home_dir+'/pdf/'+self.name.get_text()+'.pdf'
                 if gui._focus:
                     #print name
                     pdfkit.from_url(self.address.get_text(),name)
