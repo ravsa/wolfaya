@@ -18,7 +18,7 @@ $sudo apt-get install python-gtk2
 $sudo apt-get install python-webkit
 
 :wkhtmltopdf utility to convert HTML to pdf
-:pdfkit <https://github.com/pdfkit/pdfkit> so big thanks to them
+:pdfkit <https://github.com/JazzCore/python-pdfkit> so big thanks to them
 
 Features:
 ========
