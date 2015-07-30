@@ -1,0 +1,9 @@
+[Desktop Entry]
+Version=1.0
+Name=wolfaya
+GenericName=Webbrowser
+Exec=/home/ravsa/.wolfaya/images/wolfaya.py
+Terminal=True
+Type=Application
+Icon=/home/ravsa/.wolfaya/images/wolfaya1.jpg
+Categories=WebBrowser
