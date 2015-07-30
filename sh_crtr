@@ -2,7 +2,7 @@ echo "[Desktop Entry]">wolfaya.desktop
 echo "Version=1.0">>wolfaya.desktop
 echo "Name=wolfaya">>wolfaya.desktop
 echo "GenericName=Webbrowser">>wolfaya.desktop
-echo "Exec=$HOME/.wolfaya/images/wolfaya.py">>wolfaya.desktop
+echo "Exec=$HOME/.wolfaya/wolfaya.py">>wolfaya.desktop
 echo "Terminal=True">>wolfaya.desktop
 echo "Type=Application">>wolfaya.desktop
 echo "Icon=$HOME/.wolfaya/images/wolfaya1.jpg">>wolfaya.desktop

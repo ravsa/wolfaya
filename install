@@ -1,5 +1,7 @@
 #!/bin/bash
 bash dependences
+bash sh_crtr
+mv wolfaya.desktop /usr/share/applications/
 mkdir /tmp/.wolfaya
 cp -arvf * /tmp/.wolfaya/
 cp -arvf /tmp/.wolfaya/ ~/
