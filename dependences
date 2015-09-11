@@ -1,4 +1,10 @@
 cd ./pdfkit
+echo "Installing setup tools"
+if sudo apt-get install python-setuptools
+   then
+   echo "Done"
+   fi
+
 echo "Installing.. pdfkit"
 if sudo python setup.py install
 then
